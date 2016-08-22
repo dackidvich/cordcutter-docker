@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $COUCHPOTATO_DIR
+exec /sbin/setuser nobody python CouchPotato.py --config_file=$COUCHPOTATO_CONFIG/settings.conf --data_dir=$COUCHPOTATO_CONFIG/data

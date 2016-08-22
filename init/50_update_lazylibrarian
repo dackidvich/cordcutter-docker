@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ ! -d $LAZYLIB_CONFIG ]; then
+	mkdir $LAZYLIB_CONFIG
+fi
+
+chown -R nobody:nogroup $LAZYLIB_CONFIG
+chmod -R 700 $LAZYLIB_CONFIG
+
+if [ ! -d $LAZYLIB_DIR ]; then
+	git clone -b $LAZYLIB_BRANCH --single-branch $LAZYLIB_URL $LAZYLIB_DIR
+	chown -R nobody:nogroup $LAZYLIB_DIR
+	chmod -R 755 $LAZYLIB_DIR
+fi
+
+cd $LAZYLIB_DIR
+git stage -A && git reset --hard && git clean -xdf -q
+git pull

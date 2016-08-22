@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ ! -f $HEADPHONES_CONFIG/config.ini ]; then
+	if [ ! -d $HEADPHONES_CONFIG ]; then
+		mkdir $HEADPHONES_CONFIG
+	fi
+	cp /defaults/headphones_config.ini $HEADPHONES_CONFIG/config.ini
+fi
+
+chown -R nobody:nogroup $HEADPHONES_CONFIG
+chmod -R 700 $HEADPHONES_CONFIG
+
+if [ ! -d $HEADPHONES_DIR ]; then
+	git clone -b $HEADPHONES_BRANCH --single-branch $HEADPHONES_URL $HEADPHONES_DIR
+	chown -R nobody:nogroup $HEADPHONES_DIR
+	chmod -R 755 $HEADPHONES_DIR
+fi
+
+cd $HEADPHONES_DIR
+git stage -A && git reset --hard && git clean -xdf -q
+git pull

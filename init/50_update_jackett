@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Version comparison obtained from: http://stackoverflow.com/a/4025065
+vercomp () {
+    if [[ "$1" == "$2" ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
+
+if [ ! -d $JACKETT_CONFIG ]; then
+	mkdir $JACKETT_CONFIG
+fi
+chown -R nobody:nogroup $JACKETT_CONFIG
+chmod -R 700 $JACKETT_CONFIG
+
+CURRENT_VERSION="n/a"
+if [ -d $JACKETT_DIR ]; then
+	CURRENT_VERSION=$(mono $JACKETT_DIR/JackettConsole.exe -v | sed -n "s/^Jackett v\([0-9.]\+\)/\1/p")
+fi
+
+if [ -f /tmp/jackett-version ]; then
+	rm -f /tmp/jackett-version
+fi
+wget -O /tmp/jackett-version https://api.github.com/repos/${JACKETT_REPO}/Jackett/releases/latest
+JACKETT_VERSION=$(jq -r '.name' /tmp/jackett-version)
+
+vercomp $JACKETT_VERSION $CURRENT_VERSION
+VERSIONCMP=$?
+echo "Jackett update check.  Version local: $CURRENT_VERSION, server: $JACKETT_VERSION, cmp: $VERSIONCMP"
+if [ $VERSIONCMP -ne 0 ]; then
+	SCRIPT_URL=$(jq -r '.assets[] | select(.name | contains("Jackett.Binaries.Mono.tar.gz")) | .browser_download_url' /tmp/jackett-version)
+	wget -O /tmp/jackett.tgz $SCRIPT_URL --progress=dot:mega
+	tar zxvf /tmp/jackett.tgz -C /tmp
+	rm -f /tmp/jackett.tgz
+	if [ -d $JACKETT_DIR ]; then
+		rm -rf $JACKETT_DIR
+	fi
+	mkdir $JACKETT_DIR
+	mv /tmp/Jackett/* $JACKETT_DIR
+	chown -R nobody:nogroup $JACKETT_DIR
+	chmod -R 755 $JACKETT_DIR
+fi

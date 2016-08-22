@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $LAZYLIB_DIR
+exec /sbin/setuser nobody python LazyLibrarian.py --port=$LAZYLIB_PORT --datadir=$LAZYLIB_CONFIG --config=$LAZYLIB_CONFIG/config.ini --nolaunch

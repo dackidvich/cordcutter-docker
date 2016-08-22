@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $MYLAR_DIR
+exec /sbin/setuser nobody python Mylar.py --port=$MYLAR_PORT --datadir=$MYLAR_CONFIG --config=$MYLAR_CONFIG/config.ini --nolaunch

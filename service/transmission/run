@@ -1,0 +1,2 @@
+#!/bin/bash
+exec /sbin/setuser nobody transmission-daemon --foreground --config-dir $TRANSMISSION_CONFIG --peerport $TRANSMISSION_PEERPORT --port $TRANSMISSION_RPCPORT

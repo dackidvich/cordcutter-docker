@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $SONARR_DIR
+exec /sbin/setuser nobody mono NzbDrone.exe --no-browser -data=$SONARR_CONFIG

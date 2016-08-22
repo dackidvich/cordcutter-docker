@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ ! -d $SONARR_CONFIG ]; then
+	mkdir $SONARR_CONFIG
+fi
+
+chown -R nobody:nogroup $SONARR_CONFIG
+chmod -R 700 $SONARR_CONFIG
+
+if [ ! -d $SONARR_DIR ]; then
+	wget -O /tmp/Sonarr.tgz $SONARR_URL --progress=dot:mega
+	tar zxvf /tmp/Sonarr.tgz -C /tmp
+	rm -f /tmp/Sonarr.tgz
+	mv /tmp/NzbDrone $SONARR_DIR
+	chown -R nobody:nogroup $SONARR_DIR
+fi

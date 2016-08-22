@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ ! -d $MYLAR_CONFIG ]; then
+	mkdir $MYLAR_CONFIG
+fi
+
+chown -R nobody:nogroup $MYLAR_CONFIG
+chmod -R 700 $MYLAR_CONFIG
+
+if [ ! -d $MYLAR_DIR ]; then
+	git clone -b $MYLAR_BRANCH --single-branch $MYLAR_URL $MYLAR_DIR
+	chown -R nobody:nogroup $MYLAR_DIR
+	chmod -R 755 $MYLAR_DIR
+fi
+
+cd $MYLAR_DIR
+git stage -A && git reset --hard && git clean -xdf -q
+git pull

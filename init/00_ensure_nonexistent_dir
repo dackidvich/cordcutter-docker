@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ ! -d /nonexistent ]; then
+	mkdir /nonexistent
+fi
+chown -R nobody:nogroup /nonexistent
+chmod -R 777 /nonexistent

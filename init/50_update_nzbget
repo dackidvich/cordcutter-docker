@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [ ! -d $NZBGET_CONFIG ]; then
+	mkdir $NZBGET_CONFIG
+fi
+chown -R nobody:nogroup $NZBGET_CONFIG
+chmod -R 700 $NZBGET_CONFIG
+
+CURRENT_VERSION="n/a"
+if [ -x $NZBGET_DIR/nzbget ]; then
+	CURRENT_VERSION=$($NZBGET_DIR/nzbget -v | sed -n "s/^nzbget version: \([0-9.]\+\)/\1/p")
+fi
+
+if [ -f /tmp/nzbget-version ]; then
+	rm -f /tmp/nzbget-version
+fi
+wget -O /tmp/nzbget-version https://api.github.com/repos/nzbget/nzbget/releases/latest
+NZBGET_VERSION=$(jq -r '.name' /tmp/nzbget-version)
+
+if [ "$CURRENT_VERSION" != "$NZBGET_VERSION" ]; then
+	SCRIPT_URL=$(jq -r '.assets[] | select(.name | contains("-bin-linux.run")) | .browser_download_url' /tmp/nzbget-version)
+	wget -O /tmp/nzbget.run $SCRIPT_URL --progress=dot:mega
+	sh /tmp/nzbget.run --destdir $NZBGET_DIR
+	rm -f /tmp/nzbget.run
+	chown -R nobody:nogroup $NZBGET_DIR
+	chmod -R 755 $NZBGET_DIR
+fi
+
+if [ ! -f $NZBGET_CONFIG/nzbget.conf ]; then
+	cp $NZBGET_DIR/nzbget.conf $NZBGET_CONFIG
+	chown nobody:nogroup $NZBGET_CONFIG/nzbget.conf
+	chmod 600 $NZBGET_CONFIG/nzbget.conf
+fi
+
+UNRAR=$(which unrar)
+sed -i "s#^UnrarCmd=.*#UnrarCmd=$UNRAR#g" $NZBGET_CONFIG/nzbget.conf
+sed -i "s#^WebDir=.*#WebDir=$\{AppDir\}/webui#g" $NZBGET_CONFIG/nzbget.conf
+sed -i "s#^ConfigTemplate=.*#ConfigTemplate=$\{AppDir\}/nzbget.conf#g" $NZBGET_CONFIG/nzbget.conf

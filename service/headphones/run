@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $HEADPHONES_DIR
+exec /sbin/setuser nobody python Headphones.py --port=$HEADPHONES_PORT --datadir=$HEADPHONES_CONFIG --config=$HEADPHONES_CONFIG/config.ini --nolaunch -q

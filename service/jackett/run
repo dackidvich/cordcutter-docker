@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $JACKETT_DIR
+exec /sbin/setuser nobody mono JackettConsole.exe --ListenPublic --Port=$JACKETT_PORT --DataFolder=$JACKETT_CONFIG

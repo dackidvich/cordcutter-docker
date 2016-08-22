@@ -1,0 +1,14 @@
+#!/bin/bash
+
+chown -R nobody:nogroup $COUCHPOTATO_CONFIG
+chmod -R 700 $COUCHPOTATO_CONFIG
+
+if [ ! -d $COUCHPOTATO_DIR ]; then
+	git clone -b $COUCHPOTATO_BRANCH --single-branch $COUCHPOTATO_URL $COUCHPOTATO_DIR
+	chown -R nobody:nogroup $COUCHPOTATO_DIR
+	chmod -R 755 $COUCHPOTATO_DIR
+fi
+
+cd $COUCHPOTATO_DIR
+git stage -A && git reset --hard && git clean -xdf -q
+git pull
