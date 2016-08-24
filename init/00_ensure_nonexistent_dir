@@ -1,6 +1,18 @@
 #!/bin/bash
-if [ ! -d /nonexistent ]; then
-	mkdir /nonexistent
+
+set -e
+
+# This folder is used by Mono to store created key value pairs
+# Which is used by Jackett for encryption.
+# Keeping this folder in configuration allows Jackett to keep its
+# configured encryption information even when the docker container
+# is deleted and re-created
+if [ ! -d /config/nonexistent ]; then
+	mkdir /config/nonexistent
+	chown nobody:nogroup /config/nonexistent
+	chmod 700 /config/nonexistent
 fi
-chown -R nobody:nogroup /nonexistent
-chmod -R 777 /nonexistent
+
+ln -s /config/nonexistent /nonexistent
+chown nobody:nogroup /nonexistent
+chmod 700 /nonexistent
