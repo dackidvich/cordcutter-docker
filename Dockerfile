@@ -30,7 +30,7 @@ ENV SONARR_URL https://download.sonarr.tv/v2/${SONARR_BRANCH}/mono/NzbDrone.${SO
 ENV SONARR_CONFIG /config/sonarr
 ENV SONARR_PORT 8989
 
-ENV UNRAR_URL http://www.rarlab.com/rar/unrarsrc-5.4.2.tar.gz
+ENV UNRAR_URL http://www.rarlab.com/rar/unrarsrc-5.4.5.tar.gz
 ENV NZBGET_DIR /opt/nzbget
 ENV NZBGET_CONFIG /config/nzbget
 ENV NZBGET_PORT 6789
