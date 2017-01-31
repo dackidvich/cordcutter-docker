@@ -38,7 +38,7 @@ fi
 chown -R nobody:nogroup $JACKETT_CONFIG
 chmod -R 700 $JACKETT_CONFIG
 
-CURRENT_VERSION="n/a"
+CURRENT_VERSION="0"
 if [ -d $JACKETT_DIR ]; then
 	CURRENT_VERSION=$(mono $JACKETT_DIR/JackettConsole.exe -v | sed -n "s/^Jackett v\([0-9.]\+\)/\1/p")
 fi
@@ -54,7 +54,8 @@ VERSIONCMP=$?
 echo "Jackett update check.  Version local: $CURRENT_VERSION, server: $JACKETT_VERSION, cmp: $VERSIONCMP"
 if [ $VERSIONCMP -ne 0 ]; then
 	SCRIPT_URL=$(jq -r '.assets[] | select(.name | contains("Jackett.Binaries.Mono.tar.gz")) | .browser_download_url' /tmp/jackett-version)
-	wget -O /tmp/jackett.tgz $SCRIPT_URL --progress=dot:mega
+	set -e
+	wget -T 60 -O /tmp/jackett.tgz $SCRIPT_URL --progress=dot:mega
 	tar zxvf /tmp/jackett.tgz -C /tmp
 	rm -f /tmp/jackett.tgz
 	if [ -d $JACKETT_DIR ]; then
