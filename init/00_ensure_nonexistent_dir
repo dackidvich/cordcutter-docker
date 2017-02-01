@@ -13,6 +13,8 @@ if [ ! -d /config/nonexistent ]; then
 	chmod 700 /config/nonexistent
 fi
 
-ln -s /config/nonexistent /nonexistent
+if [ ! -d /nonexistent ]; then
+	ln -s /config/nonexistent /nonexistent
+fi
 chown nobody:nogroup /nonexistent
 chmod 700 /nonexistent
