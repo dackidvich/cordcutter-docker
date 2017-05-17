@@ -51,7 +51,7 @@ ENV LANGUAGE=en_US.UTF-8
 
 ENV HEADPHONES_PACKAGES shntool
 ENV MYLAR_PACKAGES python-cheetah
-ENV COUCHPOTATO_PACKAGES libxml2 python-libxslt1 python-lxml
+ENV COUCHPOTATO_PACKAGES libxml2 python-libxslt1 python-lxml python-setuptools python-dev libffi-dev libssl-dev python-pip
 ENV SONARR_PACKAGES mono-complete ca-certificates-mono mediainfo mkvtoolnix
 ENV NZBGET_PACKAGES build-essential jq
 ENV TRANSMISSION_PACKAGES transmission-cli transmission-common transmission-daemon
@@ -70,6 +70,8 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 	&& apt-get update -q \
 	&& apt-get install -qy libjpeg-turbo8-dev \
 	&& apt-get install -qy --no-install-recommends --allow-unauthenticated $PACKAGES \
+	&& echo "Installing pyopenssl for Couchpotato" \
+	&& pip install pyopenssl \
 	&& echo "Installing unrar from source for nzbget" \
 	&& wget -O unrar.tgz $UNRAR_URL --progress=dot:mega \
 	&& tar zxvf unrar.tgz \
