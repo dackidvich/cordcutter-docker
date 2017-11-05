@@ -9,12 +9,12 @@ set -e
 # is deleted and re-created
 if [ ! -d /config/nonexistent ]; then
 	mkdir /config/nonexistent
-	chown nobody:nogroup /config/nonexistent
-	chmod 700 /config/nonexistent
+	chown -R nobody:nogroup /config/nonexistent
+	chmod -R 700 /config/nonexistent
 fi
 
 if [ ! -d /nonexistent ]; then
 	ln -s /config/nonexistent /nonexistent
 fi
-chown nobody:nogroup /nonexistent
-chmod 700 /nonexistent
+chown -R nobody:nogroup /nonexistent
+chmod -R 700 /nonexistent
