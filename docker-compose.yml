@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  cordcutter:
+    container_name: cordcutter
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    restart: always
+
+    ports:
+      - 24331:24331
+      - 2000:2000
+      - 8090:8090
+      - 5299:5299
+      - 6789:6789
+      - 8989:8989
+      - 5050:5050
+      - 8181:8181
+      - 9117:9117
+
+    environment:
+      TZ: 'America/Chicago'
+      TRANSMISSION_PEERPORT: 24331
+      TRANSMISSION_RPCPORT: 2000
+
+    volumes:
+      - '/config:/config'
+      - '/Media:/Media'
+      - '/etc/localtime:/etc/localtime:ro'
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50M"
+

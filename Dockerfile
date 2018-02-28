@@ -56,7 +56,7 @@ ENV SONARR_PACKAGES mono-complete ca-certificates-mono mediainfo mkvtoolnix
 ENV NZBGET_PACKAGES build-essential jq
 ENV TRANSMISSION_PACKAGES transmission-cli transmission-common transmission-daemon
 ENV JACKETT_PACKAGES libcurl4-openssl-dev
-ENV PACKAGES git ca-certificates sqlite3 ffmpeg $HEADPHONES_PACKAGES $MYLAR_PACKAGES $COUCHPOTATO_PACKAGES $SONARR_PACKAGES $NZBGET_PACKAGES $TRANSMISSION_PACKAGES $JACKETT_PACKAGES
+ENV PACKAGES git ca-certificates sqlite3 ffmpeg python3.6 $HEADPHONES_PACKAGES $MYLAR_PACKAGES $COUCHPOTATO_PACKAGES $SONARR_PACKAGES $NZBGET_PACKAGES $TRANSMISSION_PACKAGES $JACKETT_PACKAGES
 
 WORKDIR /tmp
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
@@ -65,11 +65,16 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 	&& apt-get -f install -qy \
 	&& apt-add-repository -y ppa:git-core/ppa \
 	&& apt-add-repository -y ppa:transmissionbt/ppa \
+	&& apt-add-repository -y ppa:deadsnakes/ppa \
 	&& apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-	&& echo "deb http://download.mono-project.com/repo/debian wheezy main" | tee /etc/apt/sources.list.d/mono-xamarin.list \
+	&& echo "deb http://download.mono-project.com/repo/ubuntu stable-xenial main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
+	&& echo "deb http://mkvtoolnix.download/ubuntu/$(lsb_release -sc)/ ./" | tee /etc/apt/sources.list.d/bunkus.org.list \
+	&& wget -q -O - https://mkvtoolnix.download/gpg-pub-moritzbunkus.txt | apt-key add - \
 	&& apt-get update -q \
 	&& apt-get install -qy libjpeg-turbo8-dev \
 	&& apt-get install -qy --no-install-recommends --allow-unauthenticated $PACKAGES \
+	&& rm -f /usr/bin/python3 \
+	&& ln -s /usr/bin/python3.6 /usr/bin/python3 \
 	&& echo "Installing pyopenssl for Couchpotato" \
 	&& pip install pyopenssl \
 	&& echo "Installing unrar from source for nzbget" \
@@ -83,7 +88,6 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 VOLUME /config
-VOLUME /Media
 
 EXPOSE $HEADPHONES_PORT $LAZYLIB_PORT $MYLAR_PORT $COUCHPOTATO_PORT $SONARR_PORT $NZBGET_PORT $TRANSMISSION_PEERPORT $TRANSMISSION_RPCPORT $JACKETT_PORT
 
